@@ -1,0 +1,15 @@
+{
+  "rules": {
+    "public":  { ".read": true,  ".write": "auth != null && auth.uid === 'PASTE_AUCTIONEER_UID'" },
+    "secrets": { ".read": "auth != null && auth.uid === 'PASTE_AUCTIONEER_UID'", ".write": "auth != null && auth.uid === 'PASTE_AUCTIONEER_UID'" },
+    "results": { ".read": true,  ".write": "auth != null && auth.uid === 'PASTE_AUCTIONEER_UID'" },
+    "bids": {
+      ".read": "auth != null && auth.uid === 'PASTE_AUCTIONEER_UID'",
+      "$id": {
+        ".write": "(auth != null && auth.uid === 'PASTE_AUCTIONEER_UID') || (!data.exists() && newData.child('code').isString() && newData.child('code').val() === root.child('secrets/codes').child(newData.child('team').val()).val())",
+        ".validate": "newData.hasChildren(['team','amt','code','pid'])"
+      }
+    },
+    "probe": { "$team": { ".write": "newData.isString() && newData.val() === root.child('secrets/codes').child($team).val()" } }
+  }
+}

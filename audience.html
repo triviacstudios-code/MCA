@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>MCL Player Auction · Audience</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;600;800&display=swap">
+<link rel="stylesheet" href="style.css"></head>
+<body>
+<header><h1>🏏 MCL Player Auction</h1><span class="live"><i></i>LIVE</span><span class="sp"></span>
+<nav id="nav" style="display:none"></nav><span id="who" class="mut"></span></header><div id="home" style="display:none"></div>
+<div class="wrap" id="mainwrap"><main>
+<div class="card" id="admin" style="display:none"></div><div class="card" id="login" style="display:none"></div><div class="card" id="mine" style="display:none"></div>
+<div class="card" id="stage"></div>
+<div class="card"><div class="row" style="cursor:pointer" onclick="togglePool()"><h2 style="margin:0">Player pool</h2><span class="sp"></span><button id="ptog">▾ Collapse</button></div><div id="pbody"><div class="tabs row" id="tabs" style="margin-top:8px"></div><div id="pool" style="margin-top:8px"></div></div></div>
+</main><aside>
+<div class="card"><h2>Team budgets</h2><div id="teams"></div></div>
+<div class="card"><h2>🏆 Most valued players</h2><div id="top"></div></div>
+<div class="card"><h2>Auction feed</h2><div class="log" id="log"></div></div>
+</aside></div>
+<div class="ov" id="ov"><div><div id="ovb"></div><div class="big" id="ovt"></div><div id="ovs" style="font-size:24px"></div></div></div><div class="mini" id="mini" title="Tap to expand"></div><div class="toast" id="toast"></div>
+<script>window.ROLE='audience';</script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="firebase-config.js"></script>
+<script src="app.js"></script>
+</body></html>
