@@ -138,7 +138,8 @@ function renderPool(){$('pbody').style.display=poolOpen?'':'none';$('ptog').text
  ${p.team?`<span class="pill" style="border-color:${tm(p.team).color}">${badge(tm(p.team))} ${esc(tm(p.team).name)}</span><b>${L(p.price)}</b>`:`<span class="mut">Base ${L(p.base)}</span>`}
  ${adm()&&tab!=='sold'?`<button onclick="startP('${p.id}')" ${S.cur?'disabled':''}>Bring on</button>`:''}
  ${adm()?`<button title="Set photo link" style="padding:2px 8px" onclick="setPhoto('${p.id}')">📷</button>`:''}</div>`).join('')||'<span class="mut">Nobody here</span>'}
-function adminLogin(){fauth.signInWithEmailAndPassword($('aEm').value.trim(),$('aPw').value).catch(e=>toast('Sign-in failed: '+e.message))}
+function cfgBanner(m){if(document.getElementById('cfgb'))return;document.querySelector('header').insertAdjacentHTML('afterend','<div id="cfgb" class="card" style="margin:14px 18px;border-color:var(--acc)"><b>Not connected to Firebase.</b> '+esc(m)+' Open firebase-config.js on GitHub and fill in every value (see README).</div>')}
+function adminLogin(){if(!fauth)return toast('Firebase is not connected. Check firebase-config.js');const em=$('aEm').value.trim(),pw=$('aPw').value;if(!em||!pw)return toast('Enter your email and password');toast('Signing in…');fauth.signInWithEmailAndPassword(em,pw).catch(e=>toast('Sign-in failed: '+(e.code||'')+' '+e.message))}
 function renameTeam(id){const t=tm(id);ask('Rename '+t.name,t.name,n=>{if(!n||!n.trim()||n.trim()===t.name)return;mut(d=>{const x=T(d,id);logit(d,`✏️ ${x.name} is now ${n.trim()}`);x.name=n.trim().slice(0,40)})})}
 function setLogo(id){const t=tm(id),v=prompt('Logo link for '+t.name+' (https://… or logos/file.png). Leave empty to use logos/'+slug(t.name)+'.png',t.logo||'');if(v===null)return;mut(d=>{T(d,id).logo=drive(v)})}
 function setPhoto(id){const p=pl(id),v=prompt('Photo link for '+p.name+' (https://… or photos/file.jpg). Leave empty to use photos/'+slug(p.name)+'.jpg',p.photo||'');if(v===null)return;mut(d=>{P(d,id).photo=drive(v)})}
@@ -188,8 +189,8 @@ function invites(){const U=location.href.replace(/[#?].*$/,'').replace(/[^/]*$/,
  const ta=o.querySelector('#invt');o.querySelector('#icl').onclick=()=>o.remove();
  o.querySelector('#icp').onclick=async()=>{try{await navigator.clipboard.writeText(txt);toast('Copied')}catch(e){ta.select();try{document.execCommand('copy')}catch(x){}toast('Selected, copy it if it did not auto-copy')}}}
 setInterval(tick,250);
-try{firebase.initializeApp(FIREBASE_CONFIG);fdb=firebase.database();fauth=firebase.auth();stateRef=fdb.ref('public/state');
+try{if(!FIREBASE_CONFIG||/PASTE_HERE/.test(JSON.stringify(FIREBASE_CONFIG)))throw new Error('firebase-config.js still contains PASTE_HERE.');firebase.initializeApp(FIREBASE_CONFIG);fdb=firebase.database();fauth=firebase.auth();stateRef=fdb.ref('public/state');
  stateRef.on('value',s=>{const n=norm(s.val());flash(S,n||blank());S=n||blank();render()},e=>toast('Connection issue: '+e.code));
  if(mode==='auctioneer')fauth.onAuthStateChanged(u=>{isAdmin=!!u;if(u&&!adminLoaded){adminLoaded=true;fdb.ref('secrets/codes').on('value',s=>{CODES=s.val()||{};render()});fdb.ref('bids').on('child_added',s=>processBid(s.key,s.val()))}render()});
-}catch(e){$('stage').innerHTML='<h2>Not set up yet</h2><p class="mut">Fill in firebase-config.js (see README).</p>'}
+}catch(e){cfgBanner(e.message||String(e))}
 render();
